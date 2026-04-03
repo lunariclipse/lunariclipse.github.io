@@ -4,6 +4,7 @@
     <title>Lexical Decision Task</title>
     <script src="https://unpkg.com/jspsych@7.3.4"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
     <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" type="text/css" />
     <style>
       .stimulus-text {
@@ -20,33 +21,11 @@
   <body></body>
   <script>
     // 1. Initialize jsPsych
-    const jsPsych = initJsPsych({
-        on_finish: function() {
-            // 1. Get the data in CSV format
-            const experiment_data = jsPsych.data.get().csv();
+    const jsPsych = initJsPsych();
 
-            // 2. Use fetch to send the data to your PHP script
-            fetch("save_data.php", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                file_name: "lexical_decision_results.csv", // The name of the file to save/append to
-                exp_data: experiment_data
-            }),
-            })
-            .then((response) => response.text())
-            .then((text) => {
-            console.log("Server response:", text);
-            // Optional: Add a message to the screen for the participant
-            document.body.innerHTML = '<h2>Data saved. You may now close this window.</h2>';
-            })
-            .catch((error) => {
-            console.error("Error saving data:", error);
-            });
-        }
-    });
+    // 2. Generate a unique filename (e.g., based on timestamp or random ID)
+    const subject_id = jsPsych.randomization.randomID(10);
+    const filename = `${subject_id}.csv`;
 
     const timeline = [];
 
@@ -135,7 +114,30 @@
     };
     timeline.push(trial_procedure);
 
-    // 6. Run the experiment
+    // 3. Create the DataPipe Save Trial
+    const save_data = {
+      type: jsPsychPipe,
+      action: "save",
+      experiment_id: "YOUR_DATAPIPE_ID_HERE", // REPLACE THIS with your actual ID from DataPipe
+      filename: filename,
+      data_string: () => jsPsych.data.get().csv()
+    };
+
+    // 4. Add the save trial to the end of your timeline
+    timeline.push(save_data);
+
+    // 5. Final "Thank You" message
+    const debrief = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <p>Data saved successfully!</p>
+        <p>Participant ID: ${subject_id}</p>
+        <p>Press any key to finish the experiment.</p>
+      `
+    };
+    timeline.push(debrief);
+
+    // Run the experiment
     jsPsych.run(timeline);
   </script>
 </html>
