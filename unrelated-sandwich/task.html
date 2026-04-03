@@ -75,7 +75,7 @@
     const sandwich_target = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function() {
-            return `<div class="stimulus-text"><strong>${string.toLowerCase(jsPsych.timelineVariable('target'))}</strong></div>`;
+            return `<div class="stimulus-text"><strong>${jsPsych.timelineVariable('target').toLowerCase()}</strong></div>`;
         },
         choices: "NO_KEYS",     
         trial_duration: 300
