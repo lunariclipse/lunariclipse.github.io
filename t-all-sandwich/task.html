@@ -75,7 +75,7 @@
     const sandwich_target = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function() {
-        return `<div class="stimulus-text"><strong>${string.toLowerCase(jsPsych.timelineVariable('target'))}</strong></div>`;
+            return `<div class="stimulus-text"><strong>${string.toLowerCase(jsPsych.timelineVariable('target'))}</strong></div>`;
         },
         choices: "NO_KEYS",     
         trial_duration: 300
@@ -111,7 +111,7 @@
     // 5. Define Stimuli and link to Trial Structure
     const trial_procedure = {
       // Added fixation_trial to the beginning of the timeline sequence
-      timeline: [fixation_trial, mask_trial, prime_trial, target_trial],
+      timeline: [fixation_trial, mask_trial, sandwich_target, prime_trial, target_trial],
       timeline_variables: [
         { prime: 'doctor', target: 'NURSE', correct_key: 'f' },
         { prime: 'apple', target: 'FLIRB', correct_key: 'j' },
