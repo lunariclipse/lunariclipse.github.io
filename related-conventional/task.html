@@ -18,18 +18,24 @@
       }
       #trial-counter-container {
         position: fixed;
-       top: 20px;
+        top: 20px;
         right: 20px;
-        font-size: 18px;
-        font-family: sans-serif;
-        color: #888;
+        font-size: 20px;
+        font-family: Arial, sans-serif;
+        color: #000; /* Black text */
+        z-index: 9999; /* Stay above everything */
+        background-color: rgba(255, 255, 255, 0.8); /* Slight white background to see over stimuli */
+        padding: 10px;
+        border-radius: 5px;
+        pointer-events: none; /* Let clicks pass through to the experiment */
       }
+      .stimulus-text { font-size: 48px; font-family: Arial, sans-serif; }
+      .mask-text { font-size: 48px; font-family: monospace; letter-spacing: 5px; }
     </style>
   </head>
   <body>
-    <div id="trial-counter-container"></div>
-  </body>
-  <script>
+    <div id="trial-counter-container">Trials remaining: 191</div>
+    
     const jsPsych = initJsPsych();
 
     const subject_id = jsPsych.randomization.randomID(10);
@@ -59,9 +65,8 @@
         <br>
         <p>Press SPACE to begin.</p>
       `,
-      on_finish: function() {
+      on_start: function() {
         updateCounter(); // Show counter immediately after instructions
-        <div class="trial-counter">Trials remaining: ${trial_count}</div>
       }
     };
     timeline.push(instructions);
