@@ -24,7 +24,9 @@
         font-size: 18px;
         font-family: sans-serif;
         color: #888;
-        z-index: 100; /* Ensures it stays above jsPsych elements */
+        z-index: 9999; /* Higher z-index ensures it stays above masks and stimuli */
+        background-color: white; /* Prevents background elements from bleeding through */
+        padding: 5px;
       }
     </style>
   </head>
@@ -34,9 +36,15 @@
 
     const subject_id = jsPsych.randomization.randomID(10);
     const filename = `${subject_id}.csv`;
-
-    // 1. Initialize global trial counter
+    
     let trial_count = 191; 
+
+    function updateCounter() {
+      const counterEl = document.getElementById('trial-counter-container');
+      if (counterEl) {
+        counterEl.innerHTML = `Trials remaining: ${trial_count}`;
+      }
+    }
 
     const timeline = [];
 
@@ -52,7 +60,7 @@
         <br>
         <p>Press SPACE to begin.</p>
       `,
-      on_start: function() {
+      on_finish: function() {
         updateCounter(); // Show counter immediately after instructions
       }
     };
@@ -70,7 +78,10 @@
       type: jsPsychHtmlKeyboardResponse,
       stimulus: '<div class="stimulus-text">+</div>',
       choices: "NO_KEYS",
-      trial_duration: 1000
+      trial_duration: 1000,
+      on_start: function() {
+        updateCounter(); // Ensure count is correct at start of every trial loop
+      }
     };
 
     const mask_trial = {
